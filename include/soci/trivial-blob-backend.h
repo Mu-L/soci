@@ -1,7 +1,8 @@
-#ifndef SOCI_PRIVATE_SOCI_TRIVIAL_BLOB_BACKEND_H_INCLUDED
-#define SOCI_PRIVATE_SOCI_TRIVIAL_BLOB_BACKEND_H_INCLUDED
+#ifndef SOCI_TRIVIAL_BLOB_BACKEND_H_INCLUDED
+#define SOCI_TRIVIAL_BLOB_BACKEND_H_INCLUDED
 
 #include "soci/soci-backend.h"
+#include "soci/session.h"
 
 #include <vector>
 #include <cstring>
@@ -22,6 +23,8 @@ namespace details
 class trivial_blob_backend : public details::blob_backend
 {
 public:
+    trivial_blob_backend(details::session_backend &backend) : session_(backend) {}
+
     std::size_t get_len() override { return buffer_.size(); }
 
     std::size_t read_from_start(void* buf, std::size_t toRead,
@@ -71,7 +74,10 @@ public:
 
     const std::uint8_t *get_buffer() const { return buffer_.data(); }
 
+    details::session_backend &get_session_backend() override { return session_; }
+
 protected:
+    details::session_backend &session_;
     std::vector< std::uint8_t > buffer_;
 };
 
@@ -79,4 +85,4 @@ protected:
 
 }
 
-#endif // SOCI_PRIVATE_SOCI_TRIVIAL_BLOB_BACKEND_H_INCLUDED
+#endif // SOCI_TRIVIAL_BLOB_BACKEND_H_INCLUDED
