@@ -12,7 +12,7 @@ The simplest motivating code example for the SQL query that is supposed to retri
 
 ```cpp
 int id = ...;
-string name;
+std::string name;
 int salary;
 
 sql << "select name, salary from persons where id = " << id,
@@ -36,7 +36,7 @@ sql << "select first_name, last_name, date_of_birth "
 Integration with STL is also supported:
 
 ```cpp
-Rowset<string> rs = (sql.prepare << "select name from persons");
+Rowset<std::string> rs = (sql.prepare << "select name from persons");
 std::copy(rs.begin(), rs.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
 ```
 
