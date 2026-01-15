@@ -15,8 +15,8 @@ int id = ...;
 std::string name;
 int salary;
 
-sql << "select name, salary from persons where id = " << id,
-        into(name), into(salary);
+sql << "select name, salary from persons where id = :id",
+       use(id), into(name), into(salary);
 ```
 
 ## Basic ORM
@@ -28,7 +28,7 @@ int id = ...;
 Person p;
 
 sql << "select first_name, last_name, date_of_birth "
-       "from persons where id = " << id, into(p);
+       "from persons where id = :id", use(id), into(p);
 ```
 
 ## Integrations
