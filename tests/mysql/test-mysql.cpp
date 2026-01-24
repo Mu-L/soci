@@ -741,10 +741,18 @@ TEST_CASE("MySQL last insert id", "[mysql][last-insert-id]")
     soci::session sql(backEnd, connectString);
     table_creator_for_get_last_insert_id tableCreator(sql);
     sql << "insert into soci_test () values ()";
-    long long id;
-    bool result = sql.get_last_insert_id("soci_test", id);
-    CHECK(result == true);
-    CHECK(id == 42);
+
+    {
+        long long id = -1;
+        CHECK(sql.get_last_insert_id("soci_test", id));
+        CHECK(id == 42);
+    }
+
+    {
+        std::int64_t id = -1;
+        CHECK(sql.get_last_insert_id("soci_test", id));
+        CHECK(id == 42);
+    }
 }
 
 TEST_CASE("MySQL DDL with metadata", "[mysql][ddl]")

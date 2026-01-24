@@ -203,9 +203,17 @@ TEST_CASE("SQLite get_last_insert_id works with AUTOINCREMENT",
     sql << "insert into t(name) values('x')";
     sql << "insert into t(name) values('y')";
 
-    long long val;
-    sql.get_last_insert_id("t", val);
-    CHECK(val == 2);
+     {
+        long long val = -1;
+        CHECK(sql.get_last_insert_id("t", val));
+        CHECK(val == 2);
+     }
+
+     {
+        std::int64_t val = -1;
+        CHECK(sql.get_last_insert_id("t", val));
+        CHECK(val == 2);
+     }
 }
 
 TEST_CASE("SQLite get_last_insert_id with AUTOINCREMENT does not reuse IDs when rows deleted",
