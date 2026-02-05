@@ -314,6 +314,7 @@ mysql_statement_backend::execute(int number)
     else
     {
         // it was not a SELECT
+        numberOfRows_ = 0;
         return ef_no_data;
     }
 }
@@ -321,6 +322,13 @@ mysql_statement_backend::execute(int number)
 statement_backend::exec_fetch_result
 mysql_statement_backend::fetch(int number)
 {
+    if (numberOfRows_ == 0)
+    {
+        // There is nothing to fetch and normally we shouldn't be even called
+        // in this case, but don't do anything stupid if we are.
+        return ef_no_data;
+    }
+
     // Note: This function does not actually fetch anything from anywhere
     // - the data was already retrieved from the server in the execute()
     // function, and the actual consumption of this data will take place
