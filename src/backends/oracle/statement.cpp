@@ -160,7 +160,15 @@ statement_backend::exec_fetch_result oracle_statement_backend::execute(int numbe
     }
     else
     {
-        throw oracle_soci_error(res, session_.errhp_);
+        oracle_soci_error err(res, session_.errhp_);
+
+        // Special case of ORA-24333 error given when executing non-SELECT
+        // statements with 0 rows.
+        if (err.get_backend_error_code() != 24333)
+            throw err;
+
+        noData_ = true;
+        return ef_no_data;
     }
 }
 
