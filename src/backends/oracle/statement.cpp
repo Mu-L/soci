@@ -36,7 +36,7 @@ T get_oci_attr(OCIHandle* hp, int attr, OCIError* errhp)
 
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, errhp);
+        throw oracle_soci_error(res, errhp);
     }
 
     return value;
@@ -91,7 +91,7 @@ void oracle_statement_backend::prepare(std::string const &query,
         stmtLen, OCI_V7_SYNTAX, OCI_DEFAULT);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 }
 
@@ -139,11 +139,11 @@ statement_backend::exec_fetch_result oracle_statement_backend::execute(int numbe
             );
             if (res2 != OCI_SUCCESS)
             {
-                throw_oracle_soci_error(res2, errhTmp);
+                throw oracle_soci_error(res2, errhTmp);
             }
 
             error_row_ = get_oci_attr<ub4>(errhRow, OCI_ATTR_DML_ROW_OFFSET, errhTmp);
-            throw_oracle_soci_error(res, errhRow);
+            throw oracle_soci_error(res, errhRow);
         }
         //else: No errors, handle as success below.
     }
@@ -160,8 +160,7 @@ statement_backend::exec_fetch_result oracle_statement_backend::execute(int numbe
     }
     else
     {
-        throw_oracle_soci_error(res, session_.errhp_);
-        return ef_no_data; // unreachable dummy return to please the compiler
+        throw oracle_soci_error(res, session_.errhp_);
     }
 }
 
@@ -186,7 +185,7 @@ statement_backend::exec_fetch_result oracle_statement_backend::fetch(int number)
     }
     else
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
         return ef_no_data; // unreachable dummy return to please the compiler
     }
 }
@@ -238,7 +237,7 @@ std::string oracle_statement_backend::get_parameter_name(int index) const
 
     if ( res != OCI_SUCCESS )
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     return std::string(reinterpret_cast<const char*>(name), len);
@@ -264,7 +263,7 @@ int oracle_statement_backend::prepare_for_describe()
         1, 0, nullptr, nullptr, OCI_DESCRIBE_ONLY);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     return get_statement_attr<ub4>(OCI_ATTR_PARAM_COUNT);
@@ -291,7 +290,7 @@ void oracle_statement_backend::describe_column(int colNum,
         static_cast<ub4>(colNum));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     // Get the column name
@@ -303,7 +302,7 @@ void oracle_statement_backend::describe_column(int colNum,
         reinterpret_cast<OCIError*>(session_.errhp_));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     // Get the column type
@@ -315,7 +314,7 @@ void oracle_statement_backend::describe_column(int colNum,
         reinterpret_cast<OCIError*>(session_.errhp_));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     // get the data size
@@ -327,7 +326,7 @@ void oracle_statement_backend::describe_column(int colNum,
         reinterpret_cast<OCIError*>(session_.errhp_));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     // get the precision
@@ -339,7 +338,7 @@ void oracle_statement_backend::describe_column(int colNum,
         reinterpret_cast<OCIError*>(session_.errhp_));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     // get the scale if necessary, i.e. if not using just NUMBER, for which
@@ -354,7 +353,7 @@ void oracle_statement_backend::describe_column(int colNum,
             reinterpret_cast<OCIError*>(session_.errhp_));
         if (res != OCI_SUCCESS)
         {
-            throw_oracle_soci_error(res, session_.errhp_);
+            throw oracle_soci_error(res, session_.errhp_);
         }
     }
     else // precision is 0, meaning that this is the default number type
@@ -423,7 +422,7 @@ std::size_t oracle_statement_backend::column_size(int position)
          session_.errhp_, 1, 0, nullptr, nullptr, OCI_DESCRIBE_ONLY);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     // Get The Column Handle
@@ -435,7 +434,7 @@ std::size_t oracle_statement_backend::column_size(int position)
          static_cast<ub4>(position));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
      // Get The Data Size
@@ -447,7 +446,7 @@ std::size_t oracle_statement_backend::column_size(int position)
          reinterpret_cast<OCIError*>(session_.errhp_));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     return static_cast<std::size_t>(colSize);

@@ -56,7 +56,7 @@ std::size_t oracle_blob_backend::get_len()
 
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     return static_cast<std::size_t>(len);
@@ -81,7 +81,7 @@ std::size_t oracle_blob_backend::read_from_start(void *buf, std::size_t toRead, 
         static_cast<oraub8>(offset + 1), buf, amt, OCI_ONE_PIECE, nullptr, nullptr, 0, SQLCS_IMPLICIT);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     return static_cast<std::size_t>(amt);
@@ -104,7 +104,7 @@ std::size_t oracle_blob_backend::write_from_start(const void *buf, std::size_t t
         const_cast<void*>(buf), amt, OCI_ONE_PIECE, nullptr, nullptr, 0, 0);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     return static_cast<std::size_t>(amt);
@@ -120,7 +120,7 @@ std::size_t oracle_blob_backend::append(const void *buf, std::size_t toWrite)
         &amt, nullptr, const_cast<void*>(buf), amt, OCI_ONE_PIECE, nullptr, nullptr, 0, 0);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     return static_cast<std::size_t>(amt);
@@ -132,7 +132,7 @@ void oracle_blob_backend::trim(std::size_t newLen)
         static_cast<oraub8>(newLen));
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 }
 
@@ -155,7 +155,7 @@ void oracle_blob_backend::set_lob_locator(const oracle_blob_backend::locator_t l
         sword res = OCILobLocatorAssign(session_.svchp_, session_.errhp_, locator, &lobp_);
         if (res != OCI_SUCCESS)
         {
-            throw_oracle_soci_error(res, session_.errhp_);
+            throw oracle_soci_error(res, session_.errhp_);
         }
     }
 
@@ -168,7 +168,7 @@ void oracle_blob_backend::set_lob_locator(const oracle_blob_backend::locator_t l
 
         if (res != OCI_SUCCESS)
         {
-            throw_oracle_soci_error(res, session_.errhp_);
+            throw oracle_soci_error(res, session_.errhp_);
         }
 
         if (!already_open)
@@ -177,7 +177,7 @@ void oracle_blob_backend::set_lob_locator(const oracle_blob_backend::locator_t l
 
             if (res != OCI_SUCCESS)
             {
-                throw_oracle_soci_error(res, session_.errhp_);
+                throw oracle_soci_error(res, session_.errhp_);
             }
         }
     }
@@ -195,7 +195,7 @@ void oracle_blob_backend::reset()
 
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     if (is_temporary)
@@ -209,7 +209,7 @@ void oracle_blob_backend::reset()
 
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session_.errhp_);
+        throw oracle_soci_error(res, session_.errhp_);
     }
 
     initialized_ = false;
@@ -225,14 +225,14 @@ void oracle_blob_backend::ensure_initialized()
 
         if (res != OCI_SUCCESS)
         {
-            throw_oracle_soci_error(res, session_.errhp_);
+            throw oracle_soci_error(res, session_.errhp_);
         }
 
         res = OCILobOpen(session_.svchp_, session_.errhp_, lobp_, OCI_LOB_READWRITE);
 
         if (res != OCI_SUCCESS)
         {
-            throw_oracle_soci_error(res, session_.errhp_);
+            throw oracle_soci_error(res, session_.errhp_);
         }
 
         initialized_ = true;

@@ -19,8 +19,6 @@ namespace details
 namespace oracle
 {
 
-void throw_oracle_soci_error(sword res, OCIError *errhp);
-
 void get_error_details(sword res, OCIError *errhp,
     std::string &msg, int &errNum);
 

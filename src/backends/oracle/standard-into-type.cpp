@@ -181,7 +181,7 @@ void oracle_standard_into_type_backend::define_by_pos(
 
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, statement_.session_.errhp_);
+        throw oracle_soci_error(res, statement_.session_.errhp_);
     }
 }
 
@@ -217,7 +217,7 @@ void oracle::read_from_lob(oracle_session_backend& session,
     sword res = OCILobGetChunkSize(session.svchp_, session.errhp_, lobp, &len);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session.errhp_);
+        throw oracle_soci_error(res, session.errhp_);
     }
 
     value.clear();
@@ -251,7 +251,7 @@ void oracle::read_from_lob(oracle_session_backend& session,
                 break;
 
             default:
-                throw_oracle_soci_error(res, session.errhp_);
+                throw oracle_soci_error(res, session.errhp_);
         }
 
         value.resize(prevSize + lenChunk);

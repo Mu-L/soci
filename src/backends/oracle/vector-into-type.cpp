@@ -222,7 +222,7 @@ void oracle_vector_into_type_backend::define_by_pos_bulk(
         &indOCIHolderVec_[0], &sizes_[0], &rCodes_[0], OCI_DEFAULT);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, statement_.session_.errhp_);
+        throw oracle_soci_error(res, statement_.session_.errhp_);
     }
 }
 

@@ -387,7 +387,7 @@ void oracle_session_backend::commit()
     sword res = OCITransCommit(svchp_, errhp_, OCI_DEFAULT);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, errhp_);
+        throw oracle_soci_error(res, errhp_);
     }
 }
 
@@ -396,7 +396,7 @@ void oracle_session_backend::rollback()
     sword res = OCITransRollback(svchp_, errhp_, OCI_DEFAULT);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, errhp_);
+        throw oracle_soci_error(res, errhp_);
     }
 }
 
