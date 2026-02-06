@@ -8,7 +8,6 @@
 #include "soci/oracle/soci-oracle.h"
 #include "soci/callbacks.h"
 #include "soci/session.h"
-#include "error.h"
 #include <cctype>
 #include <cstdio>
 #include <cstring>
@@ -16,7 +15,6 @@
 
 using namespace soci;
 using namespace soci::details;
-using namespace soci::details::oracle;
 
 namespace // unnamed
 {
@@ -179,11 +177,12 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
             defaultSourceCharSetId, serviceName.c_str(), serviceName.size(), &nlsServiceLen);
         if (res != OCI_SUCCESS)
         {
-            std::string msg;
-            int errNum;
-            get_error_details(res, errhp_, msg, errNum);
+            // Note that we must create the exception object before calling
+            // clean_up() as it invalidates the error handle used to get the
+            // error details.
+            oracle_soci_error err(res, errhp_);
             clean_up();
-            throw oracle_soci_error(msg, errNum);
+            throw err;
         }
 
         res = OCINlsCharSetConvert(envhp_, errhp_,
@@ -191,11 +190,9 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
             defaultSourceCharSetId, userName.c_str(), userName.size(), &nlsUserNameLen);
         if (res != OCI_SUCCESS)
         {
-            std::string msg;
-            int errNum;
-            get_error_details(res, errhp_, msg, errNum);
+            oracle_soci_error err(res, errhp_);
             clean_up();
-            throw oracle_soci_error(msg, errNum);
+            throw err;
         }
 
         res = OCINlsCharSetConvert(envhp_, errhp_,
@@ -203,11 +200,9 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
             defaultSourceCharSetId, password.c_str(), password.size(), &nlsPasswordLen);
         if (res != OCI_SUCCESS)
         {
-            std::string msg;
-            int errNum;
-            get_error_details(res, errhp_, msg, errNum);
+            oracle_soci_error err(res, errhp_);
             clean_up();
-            throw oracle_soci_error(msg, errNum);
+            throw err;
         }
     }
     else
@@ -251,11 +246,9 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
         static_cast<sb4>(nlsServiceLen), OCI_DEFAULT);
     if (res != OCI_SUCCESS)
     {
-        std::string msg;
-        int errNum;
-        get_error_details(res, errhp_, msg, errNum);
+        oracle_soci_error err(res, errhp_);
         clean_up();
-        throw oracle_soci_error(msg, errNum);
+        throw err;
     }
 
     // register failover callback
@@ -267,11 +260,9 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
         &fo, 0, static_cast<ub4>(OCI_ATTR_FOCBK), errhp_);
     if (res != OCI_SUCCESS)
     {
-        std::string msg;
-        int errNum;
-        get_error_details(res, errhp_, msg, errNum);
+        oracle_soci_error err(res, errhp_);
         clean_up();
-        throw oracle_soci_error(msg, errNum);
+        throw err;
     }
 
     // create service context handle
@@ -288,11 +279,9 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
         OCI_ATTR_SERVER, errhp_);
     if (res != OCI_SUCCESS)
     {
-        std::string msg;
-        int errNum;
-        get_error_details(res, errhp_, msg, errNum);
+        oracle_soci_error err(res, errhp_);
         clean_up();
-        throw oracle_soci_error(msg, errNum);
+        throw err;
     }
 
     // allocate user session handle
@@ -340,11 +329,9 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
         credentialType, mode);
     if (res != OCI_SUCCESS && res != OCI_SUCCESS_WITH_INFO)
     {
-        std::string msg;
-        int errNum;
-        get_error_details(res, errhp_, msg, errNum);
+        oracle_soci_error err(res, errhp_);
         clean_up();
-        throw oracle_soci_error(msg, errNum);
+        throw err;
     }
 
     // set the session in the context handle
@@ -352,11 +339,9 @@ oracle_session_backend::oracle_session_backend(std::string const & serviceName,
         0, OCI_ATTR_SESSION, errhp_);
     if (res != OCI_SUCCESS)
     {
-        std::string msg;
-        int errNum;
-        get_error_details(res, errhp_, msg, errNum);
+        oracle_soci_error err(res, errhp_);
         clean_up();
-        throw oracle_soci_error(msg, errNum);
+        throw err;
     }
 }
 

@@ -8,7 +8,6 @@
 #include "soci/oracle/soci-oracle.h"
 #include "soci/blob.h"
 #include "clob.h"
-#include "error.h"
 #include "soci/rowid.h"
 #include "soci/statement.h"
 #include "soci/type-wrappers.h"

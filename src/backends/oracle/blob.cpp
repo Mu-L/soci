@@ -6,7 +6,6 @@
 //
 
 #include "soci/oracle/soci-oracle.h"
-#include "error.h"
 #include "soci/statement.h"
 #include <cstring>
 #include <cstdio>
@@ -15,7 +14,6 @@
 
 using namespace soci;
 using namespace soci::details;
-using namespace soci::details::oracle;
 
 oracle_blob_backend::oracle_blob_backend(oracle_session_backend &session)
     : session_(session), lobp_(nullptr), initialized_(false)

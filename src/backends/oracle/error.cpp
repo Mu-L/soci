@@ -6,12 +6,10 @@
 //
 
 #include "soci/oracle/soci-oracle.h"
-#include "error.h"
 #include <limits>
 
 using namespace soci;
 using namespace soci::details;
-using namespace soci::details::oracle;
 
 namespace
 {
@@ -106,12 +104,6 @@ std::string do_get_error_details(sword res, OCIError *errhp, int& errNum)
 }
 
 } // anonymous namespace
-
-void soci::details::oracle::get_error_details(sword res, OCIError *errhp,
-    std::string &msg, int &errNum)
-{
-    msg = do_get_error_details(res, errhp, errNum);
-}
 
 oracle_soci_error::oracle_soci_error(sword res, OCIError *errhp)
     : soci_error(do_get_error_details(res, errhp, err_num_))

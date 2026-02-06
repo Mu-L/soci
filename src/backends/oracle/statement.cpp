@@ -6,7 +6,6 @@
 //
 
 #include "soci/oracle/soci-oracle.h"
-#include "error.h"
 #include "handle.h"
 #include "soci/soci-backend.h"
 #include <cctype>

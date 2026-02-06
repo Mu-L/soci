@@ -7,7 +7,6 @@
 
 #include "soci/oracle/soci-oracle.h"
 #include "clob.h"
-#include "error.h"
 #include "soci/soci-platform.h"
 #include "soci-vector-helpers.h"
 #include <cctype>
