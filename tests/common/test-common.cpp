@@ -1501,6 +1501,96 @@ TEST_CASE_METHOD(common_tests, "Use type conversion", "[core][use]")
     }
 }
 
+// "values" tests
+TEST_CASE_METHOD(common_tests, "Use values", "[core][use][values]")
+{
+    soci::session sql(backEndFactory_, connectString_);
+
+    auto_table_creator tableCreator(tc_.table_creator_1(sql));
+
+    const int u_id = 1;
+    const char u_c('a');
+    const std::string u_s = "Hello SOCI!";
+    const double u_d = 2.0;
+
+    SECTION("Named with all i_ok indicators")
+    {
+        soci::values use_values;
+
+        use_values.set ("id", u_id, i_ok);
+        use_values.set ("c", u_c, i_ok);
+        use_values.set ("str", u_s, i_ok);
+        use_values.set ("d", u_d, i_ok);
+
+        CHECK (i_ok == use_values.get_indicator ("id"));
+        CHECK (i_ok == use_values.get_indicator ("c"));
+        CHECK (i_ok == use_values.get_indicator ("str"));
+        CHECK (i_ok == use_values.get_indicator ("d"));
+
+        sql << "insert into soci_test(id, c, str, d) values(:id, :c, :str, :d)",
+            use(use_values);
+
+        int i_id{};
+        char i_c{};
+        std::string i_s{};
+        double i_d{};
+
+        sql << "select id, c, str, d from soci_test",
+            into(i_id), into(i_c), into(i_s), into(i_d);
+
+        CHECK(i_id == 1);
+        CHECK(i_c == 'a');
+        CHECK(i_s == "Hello SOCI!");
+        CHECK(i_d == 2.0);
+    }
+
+    SECTION("Named with all i_null indicators")
+    {
+        soci::values use_values;
+
+        use_values.set ("id", u_id, i_null);
+        use_values.set ("c", u_c, i_null);
+        use_values.set ("str", u_s, i_null);
+        use_values.set ("d", u_d, i_null);
+
+        CHECK (i_null == use_values.get_indicator ("id"));
+        CHECK (i_null == use_values.get_indicator ("c"));
+        CHECK (i_null == use_values.get_indicator ("str"));
+        CHECK (i_null == use_values.get_indicator ("d"));
+
+        sql << "insert into soci_test(id, c, str, d) values(:id, :c, :str, :d)",
+            use(use_values);
+
+        int i_id{};
+        char i_c{};
+        std::string i_s{};
+        double i_d{};
+
+        indicator id_ind;
+        indicator c_ind;
+        indicator s_ind;
+        indicator d_ind;
+
+        sql << "select id, c, str, d from soci_test",
+            into(i_id, id_ind), into(i_c, c_ind), into(i_s, s_ind),
+            into(i_d, d_ind);
+
+        CHECK (int{} == i_id);
+        /*
+            Skip checking i_c, because char processing differs between backends:
+            Oracle backend returns ' ' instead of char{} or not touching the
+            value at all.
+        */
+        CHECK (std::string{} == i_s);
+        CHECK (double{} == i_d);
+
+        CHECK(id_ind == i_null);
+        CHECK(c_ind == i_null);
+        CHECK(s_ind == i_null);
+        CHECK(d_ind == i_null);
+    }
+}
+
 // test for multiple use (and into) elements
 TEST_CASE_METHOD(common_tests, "Multiple use and into", "[core][use][into]")
 {
