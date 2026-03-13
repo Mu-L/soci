@@ -115,6 +115,7 @@ function(soci_public_dependency)
   foreach (TGT IN LISTS PUBLIC_DEP_DEP_TARGETS)
     if (NOT TARGET "${TGT}")
       set(SKIP_SEARCH OFF)
+      break()
     endif()
   endforeach()
 
