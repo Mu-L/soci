@@ -85,6 +85,22 @@ function(soci_define_backend_target)
 
     list(GET CURRENT_DEP_SEARCH 0 CURRENT_DEP)
 
+    # Don't search for the dependency if it had been already predefined.
+    set(SKIP_DEP_SEARCH ON)
+    foreach (CURRENT IN LISTS CURRENT_DEP_TARGETS)
+      if(NOT TARGET ${CURRENT})
+        set(SKIP_DEP_SEARCH OFF)
+        break()
+      endif()
+    endforeach()
+
+    if(SKIP_DEP_SEARCH)
+      list(APPEND PUBLIC_DEP_CALL_ARGS
+        "NAME ${CURRENT_DEP} DEP_TARGETS ${CURRENT_DEP_TARGETS} TARGET SOCI::${DEFINE_BACKEND_NAME}"
+      )
+      continue()
+    endif()
+
     find_package(${CURRENT_DEP_SEARCH} ${REQUIRE_FLAG})
 
     if (NOT ${CURRENT_DEP}_FOUND)
@@ -103,7 +119,7 @@ function(soci_define_backend_target)
       else()
         message(FATAL_ERROR "Unspecified handling of unmet dependency")
       endif()
-    else()
+    else() # Dependency was found.
       # This is wasteful, but do it again without "QUIET" flag to show the result if it succeeded.
       if (REQUIRE_FLAG STREQUAL "QUIET")
         find_package(${CURRENT_DEP_SEARCH})
