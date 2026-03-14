@@ -162,7 +162,7 @@ if (WITH_BOOST)
 endif()
 
 target_link_libraries(soci_core
-  PUBLIC
+  PRIVATE
     $<BUILD_INTERFACE:soci_compiler_interface>
 )
 
