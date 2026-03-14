@@ -544,6 +544,7 @@ postgresql_statement_backend::execute(int number)
     }
     else
     {
+        numberOfRows_ = 0;
         return ef_no_data;
     }
 }
@@ -554,6 +555,13 @@ postgresql_statement_backend::fetch(int number)
     if (single_row_mode_ && (number > 1))
     {
         throw soci_error("Bulk operations are not supported with single-row mode.");
+    }
+
+    if (numberOfRows_ == 0)
+    {
+        // There is nothing to fetch and normally we shouldn't be even called
+        // in this case, but don't do anything stupid if we are.
+        return ef_no_data;
     }
 
     // Note:

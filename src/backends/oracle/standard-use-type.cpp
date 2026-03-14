@@ -8,7 +8,6 @@
 #include "soci/oracle/soci-oracle.h"
 #include "soci/blob.h"
 #include "clob.h"
-#include "error.h"
 #include "soci/rowid.h"
 #include "soci/statement.h"
 #include "soci/type-wrappers.h"
@@ -223,7 +222,7 @@ void oracle_standard_use_type_backend::bind_by_pos(
         &indOCIHolder_, nullptr, nullptr, 0, nullptr, OCI_DEFAULT);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, statement_.session_.errhp_);
+        throw oracle_soci_error(res, statement_.session_.errhp_);
     }
 
     statement_.boundByPos_ = true;
@@ -254,7 +253,7 @@ void oracle_standard_use_type_backend::bind_by_name(
         &indOCIHolder_, nullptr, nullptr, 0, nullptr, OCI_DEFAULT);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, statement_.session_.errhp_);
+        throw oracle_soci_error(res, statement_.session_.errhp_);
     }
 
     statement_.boundByName_ = true;
@@ -280,7 +279,7 @@ void oracle::write_to_lob(
             toWrite, OCI_ONE_PIECE, nullptr, nullptr, 0, SQLCS_IMPLICIT);
         if (res != OCI_SUCCESS)
         {
-            throw_oracle_soci_error(res, session.errhp_);
+            throw oracle_soci_error(res, session.errhp_);
         }
     }
 
@@ -289,7 +288,7 @@ void oracle::write_to_lob(
     res = OCILobGetLength(session.svchp_, session.errhp_, lobp, &len);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session.errhp_);
+        throw oracle_soci_error(res, session.errhp_);
     }
 
     if (toWrite < len)
@@ -297,7 +296,7 @@ void oracle::write_to_lob(
         res = OCILobTrim(session.svchp_, session.errhp_, lobp, toWrite);
         if (res != OCI_SUCCESS)
         {
-            throw_oracle_soci_error(res, session.errhp_);
+            throw oracle_soci_error(res, session.errhp_);
         }
     }
 }
@@ -309,7 +308,7 @@ OCILobLocator * oracle::create_temp_lob(oracle_session_backend& session)
         reinterpret_cast<dvoid**>(&lobp), OCI_DTYPE_LOB, 0, nullptr);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session.errhp_);
+        throw oracle_soci_error(res, session.errhp_);
     }
 
     res = OCILobCreateTemporary(session.svchp_,
@@ -318,7 +317,7 @@ OCILobLocator * oracle::create_temp_lob(oracle_session_backend& session)
         OCI_TEMP_CLOB, OCI_ATTR_NOCACHE, OCI_DURATION_SESSION);
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, session.errhp_);
+        throw oracle_soci_error(res, session.errhp_);
     }
 
     return lobp;

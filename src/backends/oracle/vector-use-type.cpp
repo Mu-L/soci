@@ -7,7 +7,6 @@
 
 #include "soci/oracle/soci-oracle.h"
 #include "clob.h"
-#include "error.h"
 #include "soci/soci-platform.h"
 #include "soci-vector-helpers.h"
 #include <cctype>
@@ -379,7 +378,7 @@ void oracle_vector_use_type_backend::pre_use(indicator const *ind)
 
     if (res != OCI_SUCCESS)
     {
-        throw_oracle_soci_error(res, statement_.session_.errhp_);
+        throw oracle_soci_error(res, statement_.session_.errhp_);
     }
 }
 

@@ -467,6 +467,7 @@ firebird_statement_backend::execute(int number)
     else
     {
         // query can't return any data
+        endOfRowSet_ = true;
         return ef_no_data;
     }
 }

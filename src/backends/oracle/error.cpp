@@ -6,12 +6,10 @@
 //
 
 #include "soci/oracle/soci-oracle.h"
-#include "error.h"
 #include <limits>
 
 using namespace soci;
 using namespace soci::details;
-using namespace soci::details::oracle;
 
 namespace
 {
@@ -72,9 +70,13 @@ soci_error::error_category oracle_soci_error::get_error_category() const
     return unknown;
 }
 
-void soci::details::oracle::get_error_details(sword res, OCIError *errhp,
-    std::string &msg, int &errNum)
+namespace
 {
+
+std::string do_get_error_details(sword res, OCIError *errhp, int& errNum)
+{
+    std::string msg;
+
     text errbuf[512];
     sb4 errcode;
     errNum = 0;
@@ -97,13 +99,13 @@ void soci::details::oracle::get_error_details(sword res, OCIError *errhp,
     default:
         msg = "soci error: Unknown error code";
     }
+
+    return msg;
 }
 
-void soci::details::oracle::throw_oracle_soci_error(sword res, OCIError *errhp)
-{
-    std::string msg;
-    int errNum;
+} // anonymous namespace
 
-    get_error_details(res, errhp, msg, errNum);
-    throw oracle_soci_error(msg, errNum);
+oracle_soci_error::oracle_soci_error(sword res, OCIError *errhp)
+    : soci_error(do_get_error_details(res, errhp, err_num_))
+{
 }
