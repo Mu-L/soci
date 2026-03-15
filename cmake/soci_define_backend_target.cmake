@@ -174,6 +174,9 @@ function(soci_define_backend_target)
 
   target_link_libraries(soci_interface INTERFACE SOCI::${DEFINE_BACKEND_NAME})
 
+  if (NOT SOCI_INSTALL)
+    return()
+  endif()
 
   # Setup installation rules for this backend
   install(

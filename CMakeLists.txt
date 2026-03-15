@@ -42,6 +42,7 @@ endif()
 
 option(SOCI_SHARED "Enable building SOCI as a shared library" ${SHARED_DEFAULT})
 option(SOCI_TESTS "Enable building SOCI test cases" ${PROJECT_IS_TOP_LEVEL})
+option(SOCI_INSTALL "Generate the install target." ${PROJECT_IS_TOP_LEVEL})
 option(WITH_BOOST "Enable Boost support" ON)
 cmake_dependent_option(SOCI_LTO "Enable link time optimizations in release builds" ON "LTO_AVAILABLE" OFF)
 
@@ -162,7 +163,9 @@ function(soci_build_library_name result basename)
 endfunction()
 
 include(soci_compiler_options)
-include(soci_install_dirs)
+if (SOCI_INSTALL)
+  include(soci_install_dirs)
+endif()
 
 add_subdirectory(src)
 
@@ -177,6 +180,8 @@ endif()
 
 
 # Packaging
+if (SOCI_INSTALL)
+
 include(CMakePackageConfigHelpers)
 configure_package_config_file("soci-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/soci-config.cmake"
   INSTALL_DESTINATION "${SOCI_INSTALL_CMAKEDIR}"
@@ -191,6 +196,8 @@ install(
     "${CMAKE_CURRENT_BINARY_DIR}/soci-config-version.cmake"
     DESTINATION "${SOCI_INSTALL_CMAKEDIR}"
 )
+
+endif()
 
 # Give build summary at the end but only if it's the first time we're running,
 # as indicated by SOCI_SUMMARY not being cached yet, or if it has changed.
