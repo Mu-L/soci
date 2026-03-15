@@ -143,15 +143,15 @@ time_t soci::details::timegm_impl_soci ( struct tm* tb )
 
 std::string soci::format(const char* fmt, std::string const& arg)
 {
-    return fmt::format(fmt, arg);
+    return fmt::vformat(fmt, fmt::make_format_args(arg));
 }
 
 std::string soci::format(const char* fmt, int arg)
 {
-    return fmt::format(fmt, arg);
+    return fmt::vformat(fmt, fmt::make_format_args(arg));
 }
 
 std::string soci::format(const char* fmt, size_t arg)
 {
-    return fmt::format(fmt, arg);
+    return fmt::vformat(fmt, fmt::make_format_args(arg));
 }
