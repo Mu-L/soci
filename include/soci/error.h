@@ -71,7 +71,7 @@ public:
 
 private:
     // Optional extra information (currently just the context data).
-    class soci_error_extra_info* info_;
+    class soci_error_extra_info* info_ = nullptr;
 };
 
 } // namespace soci

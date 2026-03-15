@@ -95,7 +95,6 @@ soci_error_extra_info *make_safe_copy(soci_error_extra_info* info)
 soci_error::soci_error(std::string const & msg)
      : std::runtime_error(msg)
 {
-    info_ = nullptr;
 }
 
 soci_error::soci_error(soci_error const& e) noexcept
