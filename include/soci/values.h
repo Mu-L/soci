@@ -11,7 +11,6 @@
 #include "soci/statement.h"
 #include "soci/into-type.h"
 #include "soci/use-type.h"
-#include "soci/fmt.h"
 // std
 #include <cstddef>
 #include <map>
@@ -67,7 +66,7 @@ public:
         }
         else
         {
-            throw soci_error(format("Column at position {} contains NULL value and no default was provided", pos));
+            throw soci_error("Column at position {} contains NULL value and no default was provided", pos);
         }
     }
 
@@ -124,7 +123,7 @@ public:
         }
         else
         {
-            throw soci_error(format("Column at position {} contains NULL value and no default was provided", currentPos_));
+            throw soci_error("Column at position {} contains NULL value and no default was provided", currentPos_);
         }
 
         return *this;
@@ -290,7 +289,7 @@ private:
         }
         else
         {
-            throw soci_error(format("Value at position {} was set using a different type than the one passed to get()", pos));
+            throw soci_error("Value at position {} was set using a different type than the one passed to get()", pos);
         }
     }
 

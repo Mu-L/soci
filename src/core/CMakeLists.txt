@@ -72,7 +72,6 @@ target_sources(soci_core
       "${PROJECT_SOURCE_DIR}/include/soci/error.h"
       "${PROJECT_SOURCE_DIR}/include/soci/exchange-traits.h"
       "${PROJECT_SOURCE_DIR}/include/soci/fixed-size-ints.h"
-      "${PROJECT_SOURCE_DIR}/include/soci/fmt.h"
       "${PROJECT_SOURCE_DIR}/include/soci/into-type.h"
       "${PROJECT_SOURCE_DIR}/include/soci/into.h"
       "${PROJECT_SOURCE_DIR}/include/soci/is-detected.h"

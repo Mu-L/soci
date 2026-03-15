@@ -10,7 +10,6 @@
 
 #include "soci/blob.h"
 #include "soci/error.h"
-#include "soci/fmt.h"
 #include "soci/soci-backend.h"
 #include "soci/soci-types.h"
 
@@ -486,7 +485,7 @@ private:
         }
 
         // This should be unreachable
-        throw soci_error(format("Created holder with unsupported type {}", static_cast<int>(dt)));
+        throw soci_error("Created holder with unsupported type {}", static_cast<int>(dt));
     }
 
     const db_type dt_;
