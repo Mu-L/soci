@@ -152,14 +152,9 @@ if(soci_use_bundled_fmt)
   endif()
 
   add_subdirectory(3rdparty/fmt EXCLUDE_FROM_ALL)
-  if (NOT SOCI_SHARED)
-    # When building SOCI as static library, we can't depend on fmt library, as
-    # this would require SOCI users to link with fmt too, which would also
-    # require installing it and we don't want to do this, so use header-only
-    # library in this case and also use only its build interface, as otherwise
-    # we'd still have a dependency on it in the SOCI targets.
-    set(soci_fmt $<BUILD_INTERFACE:fmt::fmt-header-only>)
-  endif()
+
+  # Use the header-only version to avoid forcing SOCI users to link with it.
+  set(soci_fmt $<BUILD_INTERFACE:fmt::fmt-header-only>)
 endif()
 
 # Helper function appending prefix and suffix to the library name.
