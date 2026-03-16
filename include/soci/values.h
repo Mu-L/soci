@@ -164,8 +164,17 @@ public:
             indicator * pind = new indicator(indic);
             indicators_.push_back(pind);
 
+            // If a NULL indicator was passes by the user, we must preserve it,
+            // even if conversion to the base type was successful.
+            indicator conv_ind = i_ok;
+
             base_type baseValue{};
-            type_conversion<T>::to_base(value, baseValue, *pind);
+            type_conversion<T>::to_base(value, baseValue, conv_ind);
+
+            if (indic != i_null)
+            {
+                *pind = conv_ind;
+            }
 
             details::copy_holder<base_type> * pcopy =
                     new details::copy_holder<base_type>(baseValue);
@@ -195,8 +204,18 @@ public:
         indicators_.push_back(pind);
 
         typedef typename type_conversion<T>::base_type base_type;
+
+        // If a NULL indicator was passes by the user, we must preserve it,
+        // even if conversion to the base type was successful.
+        indicator conv_ind = i_ok;
+
         base_type baseValue;
-        type_conversion<T>::to_base(value, baseValue, *pind);
+        type_conversion<T>::to_base(value, baseValue, conv_ind);
+
+        if (indic != i_null)
+        {
+            *pind = conv_ind;
+        }
 
         details::copy_holder<base_type> * pcopy =
             new details::copy_holder<base_type>(baseValue);
