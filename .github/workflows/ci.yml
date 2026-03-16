@@ -121,6 +121,7 @@ jobs:
             backend: Valgrind
             runner: ubuntu-24.04
             name: Valgrind
+            cxxstd: 20
           - lib_type: shared
             backend: MySQL
             runner: ubuntu-24.04

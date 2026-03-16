@@ -10,6 +10,8 @@
 
 #include <vector>
 
+#include <fmt/format.h>
+
 namespace soci
 {
 
@@ -95,7 +97,21 @@ soci_error_extra_info *make_safe_copy(soci_error_extra_info* info)
 soci_error::soci_error(std::string const & msg)
      : std::runtime_error(msg)
 {
-    info_ = nullptr;
+}
+
+soci_error::soci_error(char const* format, std::string const& arg)
+    : std::runtime_error(fmt::vformat(format, fmt::make_format_args(arg)))
+{
+}
+
+soci_error::soci_error(char const* format, int arg)
+    : std::runtime_error(fmt::vformat(format, fmt::make_format_args(arg)))
+{
+}
+
+soci_error::soci_error(char const* format, size_t arg)
+    : std::runtime_error(fmt::vformat(format, fmt::make_format_args(arg)))
+{
 }
 
 soci_error::soci_error(soci_error const& e) noexcept
