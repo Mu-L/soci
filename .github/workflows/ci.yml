@@ -62,6 +62,18 @@ jobs:
             runner: ubuntu-24.04
             unity_build: false
           - lib_type: shared
+            backend: MSSQL
+            runner: ubuntu-24.04
+            unity_build: false
+            mssql_driver: msodbcsql18
+            name: MS SQL (Microsoft driver)
+          - lib_type: shared
+            backend: MSSQL
+            runner: ubuntu-24.04
+            unity_build: false
+            mssql_driver: freetds
+            name: MS SQL (FreeTDS driver)
+          - lib_type: shared
             backend: Empty
             runner: ubuntu-24.04
             unity_build: false
@@ -191,6 +203,9 @@ jobs:
           fi
           if [ "${{matrix.mariadb}}" = true ]; then
             set_env_var SOCI_MYSQL_USE_MARIADB YES
+          fi
+          if [ -n "${{matrix.mssql_driver}}" ]; then
+            set_env_var SOCI_MSSQL_DRIVER ${{matrix.mssql_driver}}
           fi
           # Ensure SOCI_CI_BACKEND is always lowercase
           set_env_var SOCI_CI_BACKEND "$( echo "$SOCI_CI_BACKEND" | tr '[:upper:]' '[:lower:]' )"
