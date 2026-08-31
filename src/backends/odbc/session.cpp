@@ -445,6 +445,9 @@ bool odbc_session_backend::get_next_sequence_value(
             break;
 
         case prod_mssql:
+            query = "select next value for " + sequence;
+            break;
+
         case prod_mysql:
         case prod_sqlite:
             // These RDBMS implement get_last_insert_id() instead.

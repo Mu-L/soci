@@ -201,6 +201,28 @@ TEST_CASE("MS SQL table records count", "[odbc][mssql][count]")
     CHECK(hasTables);
 }
 
+struct table_creator_for_sequence : table_creator_base
+{
+    table_creator_for_sequence(soci::session & sql)
+        : table_creator_base(sql, "seqtest")
+    {
+        sql << "create sequence seqtest start with 101 increment by 1";
+    }
+};
+
+TEST_CASE("next sequence value", "[odbc][mssql][get_next_sequence_value()]")
+{
+    soci::session sql(backEnd, connectString);
+    table_creator_for_sequence tableCreator(sql);
+
+    long long val = -1;
+    CHECK(sql.get_next_sequence_value("seqtest", val));
+    CHECK(val == 101);
+
+    CHECK(sql.get_next_sequence_value("seqtest", val));
+    CHECK(val == 102);
+}
+
 // DDL Creation objects for common tests
 struct table_creator_one : public table_creator_base
 {
