@@ -13,9 +13,10 @@
 
 #include <cstdint>
 #include <cstdio>
-#include <forward_list>
 #include <limits>
+#include <string>
 #include <thread>
+#include <vector>
 
 using namespace soci;
 using namespace soci::tests;
@@ -976,20 +977,44 @@ TEST_CASE("SQLite synchronous option works from multiple threads",
     FileRemover fileRemoverSHM("test.db-shm");
     FileRemover fileRemoverWAL("test.db-wal");
 
-    std::forward_list<std::thread> threads;
-    for (int i = 0; i < 32; ++i)
+    // Note that Catch assertion macros can't be used from the worker threads,
+    // as they're not thread-safe, so we just store the error message, if any,
+    // for each thread and check them all from the main thread later.
+    constexpr int numThreads = 32;
+
+    std::vector<std::string> errors(numThreads);
+
+    std::vector<std::thread> threads;
+    threads.reserve(numThreads);
+    for (int i = 0; i < numThreads; ++i)
     {
-        threads.emplace_front([]() -> void
+        threads.emplace_back([&errors, i]() -> void
         {
-            REQUIRE_NOTHROW(
-                soci::session(backEnd, "db=test.db synchronous=extra timeout=2")
-            );
+            try
+            {
+                soci::session sql(backEnd,
+                                  "db=test.db synchronous=extra timeout=2");
+            }
+            catch (std::exception const& e)
+            {
+                errors[i] = e.what();
+            }
+            catch (...)
+            {
+                errors[i] = "unknown exception";
+            }
         });
     }
 
     for (auto& thr : threads)
     {
         thr.join();
+    }
+
+    for (int i = 0; i < numThreads; ++i)
+    {
+        INFO("Opening the database from thread #" << i << " failed");
+        CHECK(errors[i].empty());
     }
 }
 
