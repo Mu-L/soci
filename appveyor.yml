@@ -115,7 +115,7 @@ build_script:
   - cmake --build build --config %CONFIGURATION% -- %BUILD_TOOL_OPTIONS%
 
 test_script:
-  - ctest -V --timeout 300 --output-on-failure --build-config %CONFIGURATION% --exclude-regex "%SOCI_ODBC_SKIP_TESTS%"
+  - ctest --test-dir build -V --timeout 300 --output-on-failure --no-tests=error --build-config %CONFIGURATION% --exclude-regex "%SOCI_ODBC_SKIP_TESTS%"
 
 # Uncomment this to wait for RDP connection after the build end.
 #on_finish:
