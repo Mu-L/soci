@@ -309,6 +309,11 @@ private:
 
     // First row with the error for bulk operations or -1.
     int error_row_ = -1;
+
+    // True if the last executed statement returned a result set, false if it
+    // didn't return anything (e.g. because it was an UPDATE) or wasn't
+    // executed yet.
+    bool hasResultSet_ = false;
 };
 
 struct SOCI_ODBC_DECL odbc_rowid_backend : details::rowid_backend
