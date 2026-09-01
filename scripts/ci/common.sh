@@ -70,9 +70,14 @@ if [ -n "${SOCI_BUILD_STATIC}" ]; then
     SOCI_COMMON_CMAKE_OPTIONS="${SOCI_COMMON_CMAKE_OPTIONS} -DSOCI_SHARED=OFF"
 fi
 
-# These options are defaults and used by most builds, but not Valgrind one.
+# Sanitizers are enabled for all builds except the Valgrind one, so enable them
+# here and disable them just for Valgrind in its script.
+SOCI_COMMON_CMAKE_OPTIONS="$SOCI_COMMON_CMAKE_OPTIONS -DSOCI_ASAN=ON -DSOCI_UBSAN=ON"
+
+# Most builds test a single backend, so they start by turning all of them off
+# and then enable just the one they need. The builds using all the backends
+# (see build_all.sh and build_valgrind.sh) use the common options above.
 SOCI_DEFAULT_CMAKE_OPTIONS="${SOCI_COMMON_CMAKE_OPTIONS}
-    -DSOCI_ASAN=ON
     -DSOCI_DB2=OFF
     -DSOCI_EMPTY=OFF
     -DSOCI_FIREBIRD=OFF
@@ -82,11 +87,6 @@ SOCI_DEFAULT_CMAKE_OPTIONS="${SOCI_COMMON_CMAKE_OPTIONS}
     -DSOCI_POSTGRESQL=OFF
     -DSOCI_SQLITE3=OFF
 "
-
-# Most builds also enable UBSAN but it has to be disabled for some of them.
-if [ -z "${SOCI_NO_UBSAN}" ]; then
-    SOCI_DEFAULT_CMAKE_OPTIONS="$SOCI_DEFAULT_CMAKE_OPTIONS -DSOCI_UBSAN=ON"
-fi
 
 #
 # Functions
