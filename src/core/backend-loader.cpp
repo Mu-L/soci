@@ -133,9 +133,13 @@ std::string get_this_dynlib_path()
 
     std::string path = di.dli_fname;
 
+    // Note that if the path contains just the file name, it can't be used as a
+    // search path, so use the current directory in this case instead.
     auto const last_sep = path.rfind('/');
     if ( last_sep != std::string::npos )
         path.erase(last_sep);
+    else
+        path = ".";
 
     return path;
 }
@@ -250,17 +254,6 @@ std::vector<std::string>& get_default_search_paths()
 
     return paths;
 }
-
-// used to automatically initialize the global state
-struct static_state_mgr
-{
-    static_state_mgr() = default;
-
-    ~static_state_mgr()
-    {
-        unload_all();
-    }
-} static_state_mgr_;
 
 // non-synchronized helpers for the other functions
 factory_map::iterator do_unload(factory_map::iterator i)

@@ -33,6 +33,8 @@ The usage is similar to the above, but instead of providing the factory object, 
 session sql("postgresql", "dbname=mydb");
 ```
 
+Note: a dynamic/shared library corresponding to the backend name will be loaded and remain loaded until the application exit. If you want to unload it earlier, you can call `unload("postgresql")` or `unload_all()` functions, both of which are found in `soci::dynamic_backends` namespace. Also note that if you are loading the SOCI core library itself dynamically, using `dlopen()` (which also includes the case of using SOCI in a normal way from a shared library which is itself loaded dynamically, i.e. any kind of plugin) or `LoadLibrary()`, you need to ensure that no SOCI objects remain alive and call `unload_all()` before unloading the SOCI core library itself, otherwise both this library and any dynamically loaded backends will remain in memory.
+
 For convenience, the URL-like form that combines both the backend name with connection parameters is supported as well:
 
 ```cpp
