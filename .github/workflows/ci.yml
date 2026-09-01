@@ -108,10 +108,10 @@ jobs:
             cxxstd: 17
             name: SQLite3 Cxx17
           - lib_type: shared
-            backend: Empty
+            backend: All
             runner: ubuntu-24.04
             test_release_package: true
-            name: Release package
+            name: Release with all backends
           - lib_type: shared
             backend: Empty
             runner: ubuntu-24.04
